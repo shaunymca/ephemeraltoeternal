@@ -13,6 +13,9 @@ exports.getMessages = function() {
     client.query('SELECT * FROM slack.data;', function(err, result) {
       console.log(result.rows);
       resolve(result.rows);
+      client.end(function (err) {
+        if (err) throw err;
+      });
     });
   });
 };
