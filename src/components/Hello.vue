@@ -22,7 +22,8 @@
       Results for '{{ resultsForTerm }}'...
       <ul>
         <li class="message"
-            v-for="m in messages">
+            v-for="m in messages"
+            v-if="!m.hide">
           <div class="details">
             <span class="timestamp">
               {{ m.timestamp | dateFormat }}
@@ -100,10 +101,14 @@ export default {
       this.$http.get('/messages', opts).then(response => {
         this.resultsForTerm = this.searchTerm
         this.messages = response.body.map(m => {
+          if (m.text === '') {
+            m.hide = true
+            return m
+          }
           m.channel_link = 'slack://channel?id=' + m.channel_id + '&team=' + m.team_id
           m.user_link = 'slack://user?team=' + m.team_id + '&id=' + m.user_id
           m.text = m.text.replace(/^<@[A-Z0-9]*\|.* uploaded a file:/, '')
-          var imageRe = /<(.*)\|.*> and commented:/
+          var imageRe = /<(.*)\|.*>( and commented:)?/
           var imageMatch = imageRe.exec(m.text)
           if (imageMatch !== null) {
              var imagePage = imageMatch[1]
