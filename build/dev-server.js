@@ -28,8 +28,8 @@ var compiler = webpack(webpackConfig)
 app.get('/messages', (req, res) => {
   messages.getMessages().then(function(output){
     res.send(output);
-  })
-})
+  });
+});
 
 var devMiddleware = require('webpack-dev-middleware')(compiler, {
   publicPath: webpackConfig.output.publicPath,

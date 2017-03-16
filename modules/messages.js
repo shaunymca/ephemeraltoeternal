@@ -3,18 +3,18 @@ var pg = require('pg'),
 
 
 var conString = process.env.DATABASE_URL;
-var client = new pg.Client(conString);
-
-console.log(process.env.DATABASE_URL);
 
 exports.getMessages = function() {
   return Q.promise(function(resolve, reject) {
-    client.connect();
-    client.query('SELECT * FROM slack.data;', function(err, result) {
-      console.log(result.rows);
-      resolve(result.rows);
-      client.end(function (err) {
+    var client = new pg.Client(conString);
+    client.connect(function (err) {
+      if (err) throw err;
+      client.query('SELECT * FROM slack.data;', function (err, result) {
         if (err) throw err;
+        client.end(function (err) {
+          if (err) throw err;
+        });
+        resolve(result.rows);
       });
     });
   });
