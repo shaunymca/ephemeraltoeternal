@@ -58,7 +58,7 @@ export default {
       var channelMatch = channelRe.exec(this.searchTerm)
       var channel = channelMatch !== null ? channelMatch[1] : null
 
-      var query = this.searchTerm.replace(userRe, '').replace(channelRe, '')
+      var query = this.searchTerm.replace(userRe, '').replace(channelRe, '').trim()
 
       var opts = {params: {}}
 
