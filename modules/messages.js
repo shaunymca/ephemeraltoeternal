@@ -41,7 +41,7 @@ exports.getUsers = function() {
     var client = new pg.Client(conString);
     client.connect(function (err) {
       if (err) throw err;
-      client.query('SELECT distinct(user_name) FROM slack.data', function (err, result) {
+      client.query('SELECT distinct(user_name), user_id FROM slack.data;', function (err, result) {
         if (err) throw err;
         client.end(function (err) {
           if (err) throw err;
