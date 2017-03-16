@@ -1,12 +1,24 @@
 <template>
   <div class="hello">
     <div>
-      <input v-model="searchTerm"
+      <input class="search-box"
+             v-model="searchTerm"
              v-on:keyup.13="search"
              placeholder="Search your archive"/>
     </div>
-    <button v-on:click="search">Search</button>
-    <div class="results" v-if="messages.length > 0">
+    <button class="search-button"
+            v-on:click="search"
+            v-if="searchTerm !== ''"
+            v-bind:disabled="searchTerm === ''">
+      Search
+    </button>
+    <div class="results" v-if="loading">
+      Loading...
+    </div>
+    <div class="results" v-if="messages.length === 0 && !loading && resultsForTerm !== ''">
+      No results for '{{ resultsForTerm }}'
+    </div>
+    <div class="results" v-if="messages.length > 0 && !loading">
       Results for '{{ resultsForTerm }}'...
       <ul>
         <li class="message"
@@ -36,9 +48,10 @@ export default {
   name: 'hello',
   data () {
     return {
+      loading: false,
       searchTerm: '',
       resultsForTerm: '',
-      messages: []
+      messages: [],
     }
   },
   filters: {
@@ -49,6 +62,11 @@ export default {
   },
   methods: {
     search() {
+      if (this.searchTerm === '') {
+        return
+      }
+
+      this.loading = true
       var userRe = /from:@?([^\s]*)/
       var channelRe = /in:#?([^\s]*)/
 
@@ -81,9 +99,10 @@ export default {
           m.user_link = 'slack://user?team=' + m.team_id + '&id=' + m.user_id
           return m
         })
-
+        this.loading = false
       }, response => {
         alert('Something went wrong :(')
+        this.loading = false
       });
     }
   }
@@ -94,6 +113,33 @@ export default {
 <style scoped>
 h1, h2 {
   font-weight: normal;
+}
+
+.search-box {
+  width: 300px;
+  height: 30px;
+  font-size: 16px;
+  margin: 15px;
+  padding: 0 7px;
+}
+
+.search-button {
+  border: 0;
+  background: none;
+  box-shadow:none;
+  border-radius: 0px;
+  width: 100px;
+  height: 30px;
+  font-size: 16px;
+  font-weight: 100;
+}
+
+.search-button:focus, .search-box:focus {
+  outline: 0;
+}
+
+.search-button:hover, .search-button:active {
+  border: 1px solid #ececec;
 }
 
 .results {
