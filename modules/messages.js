@@ -19,3 +19,20 @@ exports.getMessages = function(searchQuery) {
     });
   });
 };
+
+exports.getUsers = function() {
+  return Q.promise(function(resolve, reject) {
+    var client = new pg.Client(conString);
+    client.connect(function (err) {
+      if (err) throw err;
+      client.query('SELECT distinct(user_name) FROM slack.data', function (err, result) {
+        if (err) throw err;
+        client.end(function (err) {
+          if (err) throw err;
+        });
+        console.log(result.rows);
+        resolve(result.rows);
+      });
+    });
+  });
+}

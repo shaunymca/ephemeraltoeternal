@@ -25,11 +25,16 @@ var app = express()
 var compiler = webpack(webpackConfig)
 
 app.get('/messages', (req, res) => {
-  console.log(req.query.q);
   messages.getMessages(req.query.q).then(function(output){
     res.send(output);
   });
 });
+
+app.get('/users', (req, res) => {
+  messages.getUsers().then(function(output){
+    res.send(output);
+  })
+})
 
 var devMiddleware = require('webpack-dev-middleware')(compiler, {
   publicPath: webpackConfig.output.publicPath,
