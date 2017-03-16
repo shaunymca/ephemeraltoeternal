@@ -17,7 +17,6 @@ var Q = require('q')
 // default port where dev server listens for incoming traffic
 var port = process.env.PORT || config.dev.port
 // automatically open browser, if not set will be false
-var autoOpenBrowser = !!config.dev.autoOpenBrowser
 // Define HTTP proxies to your custom API backend
 // https://github.com/chimurai/http-proxy-middleware
 var proxyTable = config.dev.proxyTable
@@ -26,7 +25,8 @@ var app = express()
 var compiler = webpack(webpackConfig)
 
 app.get('/messages', (req, res) => {
-  messages.getMessages().then(function(output){
+  console.log(req.query.q);
+  messages.getMessages(req.query.q).then(function(output){
     res.send(output);
   });
 });
@@ -83,7 +83,4 @@ module.exports = app.listen(port, function (err) {
   }
 
   // when env is testing, don't need open it
-  if (autoOpenBrowser && process.env.NODE_ENV !== 'testing') {
-    opn(uri)
-  }
 })
