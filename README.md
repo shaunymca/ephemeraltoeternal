@@ -16,6 +16,9 @@ You'll need to add a `.env` file to root folder? Include the connection details 
 # serve with hot reload at localhost:8080
 npm run dev
 
+# serve with (server) hot reload at localhost:8080
+nodemon build/dev-server.js
+
 # build for production with minification
 npm run build
 

@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "dotenv": "^4.0.0",
+    "nodemon": "^1.11.0",
     "pg": "^6.1.4",
     "vue": "^2.2.2",
     "vue-resource": "^1.2.1",
