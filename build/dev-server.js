@@ -36,6 +36,13 @@ app.get('/users', (req, res) => {
   })
 })
 
+
+app.get('/channels', (req, res) => {
+  messages.getChannels().then(function(output){
+    res.send(output);
+  })
+})
+
 var devMiddleware = require('webpack-dev-middleware')(compiler, {
   publicPath: webpackConfig.output.publicPath,
   quiet: true
