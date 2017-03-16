@@ -49,10 +49,29 @@ export default {
   },
   methods: {
     search() {
-      var opts = {
-        params: {
-          q: this.searchTerm
-        }
+      var userRe = /from:@?([^\s]*)/
+      var channelRe = /in:#?([^\s]*)/
+
+      var userMatch = userRe.exec(this.searchTerm)
+      var user = userMatch !== null ? userMatch[1] : null
+
+      var channelMatch = channelRe.exec(this.searchTerm)
+      var channel = channelMatch !== null ? channelMatch[1] : null
+
+      var query = this.searchTerm.replace(userRe, '').replace(channelRe, '')
+
+      var opts = {params: {}}
+
+      if (user !== null) {
+        opts.params.u = user
+      }
+
+      if (channel !== null) {
+        opts.params.c = channel
+      }
+
+      if (query !== '') {
+        opts.params.q = query
       }
 
       this.$http.get('/messages', opts).then(response => {
