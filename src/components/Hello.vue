@@ -132,6 +132,7 @@ h1, h2 {
   height: 30px;
   font-size: 16px;
   font-weight: 100;
+  border: 1px solid #ececec;
 }
 
 .search-button:focus, .search-box:focus {
@@ -139,7 +140,7 @@ h1, h2 {
 }
 
 .search-button:hover, .search-button:active {
-  border: 1px solid #ececec;
+  border: 2px solid #ececec;
 }
 
 .results {
@@ -157,6 +158,10 @@ ul {
   margin: 0 10px;
   border-bottom: 1px solid #ececec;
   padding: 10px 5px;
+}
+
+.message:last-child {
+  border-bottom: 0;
 }
 
 .text {
