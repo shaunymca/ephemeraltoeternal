@@ -25,7 +25,7 @@ var app = express()
 var compiler = webpack(webpackConfig)
 
 app.get('/messages', (req, res) => {
-  messages.getMessages(req.query.q).then(function(output){
+  messages.getMessages(req.query).then(function(output){
     res.send(output);
   });
 });
