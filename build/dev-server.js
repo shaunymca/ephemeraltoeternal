@@ -27,7 +27,7 @@ var compiler = webpack(webpackConfig)
 
 app.get('/messages', (req, res) => {
   messages.getMessages().then(function(output){
-    res.send(cannedResponse)
+    res.send(output);
   })
 })
 
