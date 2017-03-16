@@ -10,7 +10,6 @@ exports.getMessages = function(searchQuery) {
     client.connect(function (err) {
       if (err) throw err;
       queryparts = queryParts(searchQuery);
-      console.log(queryparts);
       client.query('SELECT * FROM slack.data where 1=1 ' + queryparts.user.column + queryparts.channel.column + queryparts.query.column + ' ;', [queryparts.user.query, queryparts.channel.query, queryparts.query.query], function (err, result) {
         if (err) throw err;
         client.end(function (err) {
@@ -31,7 +30,7 @@ queryParts = function(searchQuery) {
    queryPart.channel = {column : " AND channel_name = $2", query : searchQuery.c}
  } else {queryPart.channel = {column : "AND 1 = $2", query : 1}}
   if (typeof searchQuery.q !== 'undefined') {
-   queryPart.query = {column : " AND text like $1", query : "%" + searchQuery.q + "%" }
+   queryPart.query = {column : " AND text like $3", query : "%" + searchQuery.q + "%" }
  } else {queryPart.query = {column : "AND 1 = $3", query : 1}}
   return queryPart;
 }
