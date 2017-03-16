@@ -22,6 +22,7 @@ exports.getMessages = function(searchQuery) {
 };
 
 queryParts = function(searchQuery) {
+  console.log(searchQuery.q);
   var queryPart = {};
   if (typeof searchQuery.u !== 'undefined') {
    queryPart.user = {column: " AND user_name = $1", query : searchQuery.u}
@@ -30,7 +31,7 @@ queryParts = function(searchQuery) {
    queryPart.channel = {column : " AND channel_name = $2", query : searchQuery.c}
  } else {queryPart.channel = {column : "AND 1 = $2", query : 1}}
   if (typeof searchQuery.q !== 'undefined') {
-   queryPart.query = {column : " AND text like $3", query : "%" + searchQuery.q + "%" }
+   queryPart.query = {column : " AND  text::text @@ $3::text", query : searchQuery.q}
  } else {queryPart.query = {column : "AND 1 = $3", query : 1}}
   return queryPart;
 }

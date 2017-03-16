@@ -24,6 +24,7 @@ var proxyTable = config.dev.proxyTable
 var app = express()
 var compiler = webpack(webpackConfig)
 
+
 app.get('/messages', (req, res) => {
   messages.getMessages(req.query).then(function(output){
     res.send(output);
