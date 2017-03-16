@@ -8,6 +8,10 @@
 # install dependencies
 npm install
 
+# add a dotenv file
+You'll need to add a `.env` file to root folder? Include the connection details like below:
+`DATABASE_URL=<your database uri>`
+
 # serve with hot reload at localhost:8080
 npm run dev
 

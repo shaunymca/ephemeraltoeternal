@@ -1,4 +1,5 @@
 require('./check-versions')()
+require('dotenv').config()
 
 var config = require('../config')
 if (!process.env.NODE_ENV) {
@@ -11,7 +12,8 @@ var express = require('express')
 var webpack = require('webpack')
 var proxyMiddleware = require('http-proxy-middleware')
 var webpackConfig = require('./webpack.dev.conf')
-
+var messages = require('../modules/messages.js')
+var Q = require('q')
 // default port where dev server listens for incoming traffic
 var port = process.env.PORT || config.dev.port
 // automatically open browser, if not set will be false
@@ -24,20 +26,9 @@ var app = express()
 var compiler = webpack(webpackConfig)
 
 app.get('/messages', (req, res) => {
-  console.log(req.query.q);
-  var cannedResponse = {
-    "channel_id":"C4L0Q5FLN",
-    "channel_na":"slackwebhooktest",
-    "service_id":"155374607444",
-    "team_domai":"rjmetrics",
-    "team_id":"T024HF8B5",
-    "text":"I didn?t have time to set up the node server/beginning of the vue stuff yet. But we should have data soon after we start replicating data",
-    "timestamp":"1489672977.151504",
-    "token":"XUi21S7HZ3jk6DLDSGv1UN4A",
-    "user_id":"U02G2TR43",
-    "user_name":"shaun"
-  }
-  res.send(cannedResponse)
+  messages.getMessages().then(function(output){
+    res.send(cannedResponse)
+  })
 })
 
 var devMiddleware = require('webpack-dev-middleware')(compiler, {
