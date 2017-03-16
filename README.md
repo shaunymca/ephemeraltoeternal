@@ -1,1 +1,1 @@
-# hackathon-slack-rememberer
+# ephemeral-to-eternal
