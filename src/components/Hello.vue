@@ -164,11 +164,23 @@ ul {
 }
 
 .details {
+  display: flex;
   margin-bottom: 5px;
   font-size: 90%;
+  width: 400px;
+}
+
+.details span {
+  flex-grow: 1;
 }
 
 a {
-  color: #42b983;
+  text-decoration: none;
+  color: #7c87e0;
+  font-weight: bold;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 </style>
