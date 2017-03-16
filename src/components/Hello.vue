@@ -34,6 +34,11 @@
               <a v-bind:href="m.user_link">@{{ m.user_name }}</a>
             </span>
           </div>
+          <a v-bind:href="m.image_link"
+             v-if="m.image_src !== null"
+             target="_blank">
+            <img v-bind:src="m.image_src" />
+          </a>
           <span class="text">{{ m.text }}</span>
         </li>
       </ul>
@@ -97,6 +102,16 @@ export default {
         this.messages = response.body.map(m => {
           m.channel_link = 'slack://channel?id=' + m.channel_id + '&team=' + m.team_id
           m.user_link = 'slack://user?team=' + m.team_id + '&id=' + m.user_id
+          m.text = m.text.replace(/^<@[A-Z0-9]*\|.* uploaded a file:/, '')
+          var imageRe = /<(.*)\|.*> and commented:/
+          var imageMatch = imageRe.exec(m.text)
+          if (imageMatch !== null) {
+             var imagePage = imageMatch[1]
+             m.image_link = imagePage
+             var imageUrlPart = imagePage.replace(/^.*.slack.com\/files\/[^\/]*\//, '')
+             m.image_src = 'https://files.slack.com/files-pri/' + m.team_id + '-' + imageUrlPart
+          }
+          m.text = m.text.replace(imageRe, '')
           return m
         })
         this.loading = false
@@ -162,6 +177,12 @@ ul {
 
 .message:last-child {
   border-bottom: 0;
+}
+
+.message img {
+  display: block;
+  max-width: 90%;
+  margin: 10px auto;
 }
 
 .text {
