@@ -44,6 +44,12 @@ app.get('/channels', (req, res) => {
   })
 })
 
+app.get('/findByTimestamp', (req, res) => {
+  messages.findByTimestamp(req.query.t).then(function(output){
+    res.send(output);
+  })
+})
+
 var devMiddleware = require('webpack-dev-middleware')(compiler, {
   publicPath: webpackConfig.output.publicPath,
   quiet: true

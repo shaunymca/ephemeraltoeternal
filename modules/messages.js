@@ -69,3 +69,25 @@ exports.getChannels = function() {
     });
   });
 }
+
+exports.findByTimestamp = function(timestamp) {
+  return Q.promise(function(resolve, reject) {
+    var client = new pg.Client(conString);
+    client.connect(function (err) {
+      if (err) throw err;
+      client.query('SELECT * FROM slack.data where timestamp >= $1 limit 25;', [timestamp], function (err, result) {
+        if (err) throw err;
+        firstMessages = result.rows
+        client.query('SELECT * FROM slack.data where timestamp < $1 limit 25;', [timestamp], function (err, result) {
+          if (err) throw err;
+          var fullMessages = firstMessages.concat(result.rows)
+          
+          client.end(function (err) {
+            if (err) throw err;
+          });
+          resolve(fullMessages);
+        });
+      });
+    });
+  });
+};
