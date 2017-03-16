@@ -51,3 +51,20 @@ exports.getUsers = function() {
     });
   });
 }
+
+exports.getChannels = function() {
+  return Q.promise(function(resolve, reject) {
+    var client = new pg.Client(conString);
+    client.connect(function (err) {
+      if (err) throw err;
+      client.query('SELECT distinct(channel_name) FROM slack.data', function (err, result) {
+        if (err) throw err;
+        client.end(function (err) {
+          if (err) throw err;
+        });
+        console.log(result.rows);
+        resolve(result.rows);
+      });
+    });
+  });
+}
