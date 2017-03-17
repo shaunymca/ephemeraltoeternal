@@ -375,7 +375,7 @@ a:hover {
 
 .instructions-container {
   padding: 35px;
-  color #5f5f5f;
+  color: #5f5f5f;
   font-weight: 500;
 }
 
