@@ -14,11 +14,11 @@
   "image": "heroku/nodejs",
   "scripts": {
     "postdeploy": "npm install"
-  }
+  },
   "env": {
     "PGSSLMODE": {
       "description": "Enables this app to access the database with SSL turned on",
       "value":"requre"
-      }
     }
   }
+}
