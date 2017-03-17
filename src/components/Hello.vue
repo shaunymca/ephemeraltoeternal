@@ -313,7 +313,7 @@ ul {
 }
 
 .message.expanded {
-  background-color: #ffeba3;
+  background-color: #fffaea;
 }
 
 .text {
