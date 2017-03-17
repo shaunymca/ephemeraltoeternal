@@ -169,7 +169,12 @@ export default {
   methods: {
     getUserNameById(uid) {
       var targetUserId = uid.replace(/<@(.*)>/, "$1")
-      return '@' + this.users.find((u) => u.user_id === targetUserId).user_name
+      var user = this.users.find((u) => u.user_id === targetUserId)
+      if (user !== undefined) {
+        return '@' + user.user_name
+      } else {
+        return '@' + uid
+      }
     },
     parseMessage(m) {
       if (m.text === '') {
