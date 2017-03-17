@@ -22,7 +22,6 @@ exports.getMessages = function(searchQuery) {
 };
 
 queryParts = function(searchQuery) {
-  console.log(searchQuery.q);
   var queryPart = {};
   if (typeof searchQuery.u !== 'undefined') {
    queryPart.user = {column: " AND user_name = $1", query : searchQuery.u}
@@ -46,7 +45,6 @@ exports.getUsers = function() {
         client.end(function (err) {
           if (err) throw err;
         });
-        console.log(result.rows);
         resolve(result.rows);
       });
     });
@@ -63,7 +61,6 @@ exports.getChannels = function() {
         client.end(function (err) {
           if (err) throw err;
         });
-        console.log(result.rows);
         resolve(result.rows);
       });
     });
