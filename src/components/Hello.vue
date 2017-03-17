@@ -381,6 +381,7 @@ ul {
   background: none;
   border: 0;
   outline: 0;
+  cursor: pointer;
 }
 
 .expand-button:hover {
