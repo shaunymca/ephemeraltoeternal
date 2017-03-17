@@ -36,7 +36,8 @@
       <ul>
         <li class="message"
             v-for="m in messages"
-            v-if="!m.hide">
+            v-if="!m.hide"
+            v-bind:class="{expanded: m.expanded}">
           <div class="details">
             <span class="user">
               <a v-bind:href="m.user_link">@{{ m.user_name }}</a>
@@ -45,7 +46,9 @@
               <a v-bind:href="m.channel_link">#{{ m.channel_name }}</a>
             </span>
             <span class="timestamp">
-              {{ m.timestamp | dateFormat }}
+              <button class="expand-button" v-on:click="expandMessage(m)">
+                {{ m.timestamp | dateFormat }}
+              </button>
             </span>
           </div>
           <a v-bind:href="m.image_link"
@@ -123,6 +126,46 @@ export default {
     }
   },
   methods: {
+    parseMessage(m) {
+      if (m.text === '') {
+        m.hide = true
+        return m
+      }
+      m.channel_link = 'slack://channel?id=' + m.channel_id + '&team=' + m.team_id
+      m.user_link = 'slack://user?team=' + m.team_id + '&id=' + m.user_id
+      m.text = m.text.replace(/^<@[A-Z0-9]*\|.* uploaded a file:/, '')
+      var imageRe = /<(.*)\|.*>( and commented:)?/
+      var imageMatch = imageRe.exec(m.text)
+      if (imageMatch !== null) {
+          var imagePage = imageMatch[1]
+          m.image_link = imagePage
+          var imageUrlPart = imagePage.replace(/^.*.slack.com\/files\/[^\/]*\//, '')
+          m.image_src = 'https://files.slack.com/files-pri/' + m.team_id + '-' + imageUrlPart
+      }
+      m.text = m.text.replace(imageRe, '')
+      return m
+    },
+    sortMessages(a, b) {
+      return parseFloat(a.timestamp) - parseFloat(b.timestamp);
+    },
+    expandMessage(m) {
+      this.loading = true
+      var opts = {
+        params: {
+          t: m.timestamp
+        }
+      }
+      this.$http.get('/findByTimestamp', opts).then(response => {
+        var messages = response.body.map(this.parseMessage).sort(this.sortMessages)
+        this.messages = messages.map(innerM => {
+          if (innerM.timestamp === m.timestamp) {
+            innerM.expanded = true
+          }
+          return innerM
+        })
+        this.loading = false
+      })
+    },
     pickSuggestedUser(u) {
       this.userSuggestions = []
       this.searchTerm = 'from:@' + u
@@ -164,25 +207,7 @@ export default {
 
       this.$http.get('/messages', opts).then(response => {
         this.resultsForTerm = this.searchTerm
-        this.messages = response.body.map(m => {
-          if (m.text === '') {
-            m.hide = true
-            return m
-          }
-          m.channel_link = 'slack://channel?id=' + m.channel_id + '&team=' + m.team_id
-          m.user_link = 'slack://user?team=' + m.team_id + '&id=' + m.user_id
-          m.text = m.text.replace(/^<@[A-Z0-9]*\|.* uploaded a file:/, '')
-          var imageRe = /<(.*)\|.*>( and commented:)?/
-          var imageMatch = imageRe.exec(m.text)
-          if (imageMatch !== null) {
-             var imagePage = imageMatch[1]
-             m.image_link = imagePage
-             var imageUrlPart = imagePage.replace(/^.*.slack.com\/files\/[^\/]*\//, '')
-             m.image_src = 'https://files.slack.com/files-pri/' + m.team_id + '-' + imageUrlPart
-          }
-          m.text = m.text.replace(imageRe, '')
-          return m
-        })
+        this.messages = response.body.map(this.parseMessage).sort(this.sortMessages)
         this.loading = false
       }, response => {
         alert('Something went wrong :(')
@@ -265,7 +290,6 @@ h1, h2 {
   border: 2px solid #ececec;
 }
 
-
 ul {
   list-style-type: none;
   padding: 0;
@@ -288,6 +312,10 @@ ul {
   margin: 10px auto;
 }
 
+.message.expanded {
+  background-color: #ffeba3;
+}
+
 .text {
   white-space: pre-line;
 }
@@ -297,6 +325,17 @@ ul {
   margin-bottom: 5px;
   font-size: 90%;
   width: 400px;
+}
+
+.expand-button {
+  color: #999999;
+  background: none;
+  border: 0;
+  outline: 0;
+}
+
+.expand-button:hover {
+  text-decoration:underline;
 }
 
 .details span {
