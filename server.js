@@ -7,7 +7,6 @@ var Q = require('q')
 var app = express()
 app.use(serveStatic(path.join(__dirname, 'dist')))
 
-
 app.get('/messages', (req, res) => {
   messages.getMessages(req.query).then(function(output){
     res.send(output);
