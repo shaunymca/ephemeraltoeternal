@@ -45,7 +45,11 @@ exports.getUsers = function() {
         client.end(function (err) {
           if (err) throw err;
         });
-        resolve(result.rows);
+        if (result.rows) {
+          resolve(result.rows);
+        }
+        else {resolve([])}
+        
       });
     });
   });
@@ -61,7 +65,10 @@ exports.getChannels = function() {
         client.end(function (err) {
           if (err) throw err;
         });
-        resolve(result.rows);
+        if (result.rows) {
+          resolve(result.rows);
+        }
+        else {resolve([])}
       });
     });
   });
