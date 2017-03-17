@@ -11,7 +11,17 @@ export default new Router({
     {
       path: '/',
       name: 'Hello',
-      component: Hello
+      component: Hello,
+      children: [
+        {
+          path: 'search/:query',
+          name: 'Search'
+        },
+        {
+          path: 'message/:timestamp',
+          name: 'Message'
+        }
+      ]
     }
   ]
 })

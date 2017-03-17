@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <div   v-if="users.length === 0">
+    <div v-if="users.length === 0 && !loading">
       <div class='results'>
         <h2>Getting Set Up</h2>
         </br>
@@ -42,18 +42,29 @@
         </li>
       </ul>
     </div>
-    <div class="results" v-if="loading">
-      <div class="desc">Loading...</div>
-    </div>
-    <div v-if="messages.length === 0 && !loading && resultsForTerm == ''"> 
+    <div v-if="messages.length === 0 &&
+               resultsForTerm == '' &&
+               $route.name !== 'Message'">
       <br>
-      <h2>Nothing to show yet, start searching</h2>
+      <h2>
+        <span v-if="!loading">
+          Nothing to show yet, start searching
+        </span>
+        <span v-if="loading">
+          Loading...
+        </span>
+      </h2>
     </div>
-    <div class="results" v-if="messages.length === 0 && !loading && resultsForTerm !== ''">
+    <div class="results" v-if="messages.length === 0 &&
+                               !loading &&
+                               resultsForTerm !== '' &&
+                               $route.name !== 'Message'">
       <div class="desc">No results for '{{ resultsForTerm }}'</div>
     </div>
     <div class="results" v-if="messages.length > 0 && !loading">
-      <div class="desc">Results for '{{ resultsForTerm }}':</div>
+      <div class="desc" v-if="$route.name !== 'Message'">
+        Results for '{{ resultsForTerm }}':
+      </div>
       <ul>
         <li class="message"
             v-for="m in messages"
@@ -92,10 +103,19 @@ export default {
   mounted() {
     this.$http.get('/users').then(response => {
       this.users = response.body.map(u => u.user_name)
+      this.loading = false
     })
     this.$http.get('/channels').then(response => {
       this.channels = response.body.map(c => c.channel_name)
     })
+
+    if (this.$route.name === 'Search') {
+      this.searchTerm = this.$route.params.query
+      this.search()
+    }
+    if (this.$route.name === 'Message') {
+      this.expandMessage({timestamp: this.$route.params.timestamp})
+    }
   },
   watch: {
     searchTerm: function (val, oldVal) {
@@ -130,7 +150,7 @@ export default {
   },
   data () {
     return {
-      loading: false,
+      loading: true,
       searchTerm: '',
       resultsForTerm: '',
       messages: [],
@@ -176,6 +196,9 @@ export default {
           t: m.timestamp
         }
       }
+
+      this.$router.push({ path: '/message/' + m.timestamp })
+
       this.$http.get('/findByTimestamp', opts).then(response => {
         var messages = response.body.map(this.parseMessage).sort(this.sortMessages)
         this.messages = messages.map(innerM => {
@@ -184,6 +207,7 @@ export default {
           }
           return innerM
         })
+        this.resultsForTerm = ''
         this.loading = false
       })
     },
@@ -225,6 +249,8 @@ export default {
       if (query !== '') {
         opts.params.q = query
       }
+
+      this.$router.push({ path: '/search/' + this.searchTerm })
 
       this.$http.get('/messages', opts).then(response => {
         this.resultsForTerm = this.searchTerm
