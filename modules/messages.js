@@ -45,7 +45,7 @@ exports.getUsers = function() {
         client.end(function (err) {
           if (err) throw err;
         });
-        if (result.rows) {
+        if (typeof result.row !== 'undefined' s) {
           resolve(result.rows);
         }
         else {resolve([])}
@@ -65,7 +65,7 @@ exports.getChannels = function() {
         client.end(function (err) {
           if (err) throw err;
         });
-        if (result.rows) {
+        if (typeof result.row !== 'undefined' s) {
           resolve(result.rows);
         }
         else {resolve([])}
