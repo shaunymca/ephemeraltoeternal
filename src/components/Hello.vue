@@ -4,7 +4,7 @@
       <input class="search-box"
              v-model="searchTerm"
              v-on:keyup.13="search"
-             placeholder="Search your archive"/>
+             placeholder="Search for... e.g. #my-channel or @gooduser"/>
       <button class="search-button"
               v-on:click="search"
               v-bind:disabled="searchTerm === ''">
@@ -26,26 +26,29 @@
       </ul>
     </div>
     <div class="results" v-if="loading">
-      Loading...
+      <div class="desc">Loading...</div>
     </div>
     <div class="results" v-if="messages.length === 0 && !loading && resultsForTerm !== ''">
-      No results for '{{ resultsForTerm }}'
+      <div class="desc">No results for '{{ resultsForTerm }}'</div>
     </div>
     <div class="results" v-if="messages.length > 0 && !loading">
-      Results for '{{ resultsForTerm }}'...
+      <div class="desc">Results for '{{ resultsForTerm }}':</div>
       <ul>
         <li class="message"
             v-for="m in messages"
-            v-if="!m.hide">
+            v-if="!m.hide"
+            v-bind:class="{expanded: m.expanded}">
           <div class="details">
-            <span class="timestamp">
-              {{ m.timestamp | dateFormat }}
+            <span class="user">
+              <a v-bind:href="m.user_link">@{{ m.user_name }}</a>
             </span>
             <span class="channel">
               <a v-bind:href="m.channel_link">#{{ m.channel_name }}</a>
             </span>
-            <span class="user">
-              <a v-bind:href="m.user_link">@{{ m.user_name }}</a>
+            <span class="timestamp">
+              <button class="expand-button" v-on:click="expandMessage(m)">
+                {{ m.timestamp | dateFormat }}
+              </button>
             </span>
           </div>
           <a v-bind:href="m.image_link"
@@ -123,6 +126,46 @@ export default {
     }
   },
   methods: {
+    parseMessage(m) {
+      if (m.text === '') {
+        m.hide = true
+        return m
+      }
+      m.channel_link = 'slack://channel?id=' + m.channel_id + '&team=' + m.team_id
+      m.user_link = 'slack://user?team=' + m.team_id + '&id=' + m.user_id
+      m.text = m.text.replace(/^<@[A-Z0-9]*\|.* uploaded a file:/, '')
+      var imageRe = /<(.*)\|.*>( and commented:)?/
+      var imageMatch = imageRe.exec(m.text)
+      if (imageMatch !== null) {
+          var imagePage = imageMatch[1]
+          m.image_link = imagePage
+          var imageUrlPart = imagePage.replace(/^.*.slack.com\/files\/[^\/]*\//, '')
+          m.image_src = 'https://files.slack.com/files-pri/' + m.team_id + '-' + imageUrlPart
+      }
+      m.text = m.text.replace(imageRe, '')
+      return m
+    },
+    sortMessages(a, b) {
+      return parseFloat(a.timestamp) - parseFloat(b.timestamp);
+    },
+    expandMessage(m) {
+      this.loading = true
+      var opts = {
+        params: {
+          t: m.timestamp
+        }
+      }
+      this.$http.get('/findByTimestamp', opts).then(response => {
+        var messages = response.body.map(this.parseMessage).sort(this.sortMessages)
+        this.messages = messages.map(innerM => {
+          if (innerM.timestamp === m.timestamp) {
+            innerM.expanded = true
+          }
+          return innerM
+        })
+        this.loading = false
+      })
+    },
     pickSuggestedUser(u) {
       this.userSuggestions = []
       this.searchTerm = 'from:@' + u
@@ -164,25 +207,7 @@ export default {
 
       this.$http.get('/messages', opts).then(response => {
         this.resultsForTerm = this.searchTerm
-        this.messages = response.body.map(m => {
-          if (m.text === '') {
-            m.hide = true
-            return m
-          }
-          m.channel_link = 'slack://channel?id=' + m.channel_id + '&team=' + m.team_id
-          m.user_link = 'slack://user?team=' + m.team_id + '&id=' + m.user_id
-          m.text = m.text.replace(/^<@[A-Z0-9]*\|.* uploaded a file:/, '')
-          var imageRe = /<(.*)\|.*>( and commented:)?/
-          var imageMatch = imageRe.exec(m.text)
-          if (imageMatch !== null) {
-             var imagePage = imageMatch[1]
-             m.image_link = imagePage
-             var imageUrlPart = imagePage.replace(/^.*.slack.com\/files\/[^\/]*\//, '')
-             m.image_src = 'https://files.slack.com/files-pri/' + m.team_id + '-' + imageUrlPart
-          }
-          m.text = m.text.replace(imageRe, '')
-          return m
-        })
+        this.messages = response.body.map(this.parseMessage).sort(this.sortMessages)
         this.loading = false
       }, response => {
         alert('Something went wrong :(')
@@ -200,33 +225,50 @@ h1, h2 {
 }
 
 .results {
-  background-color: white;
-  padding: 15px 15px;
   margin: 40px auto;
-  width: 75%;
   text-align: left;
+  width: 780px;
+  background-color: #FFFFFF;
+  border: 1px solid #D2D2D2;
+
+}
+
+.results .desc {
+  width: 285.41px;
+  height: 23px;
+  font-family: Avenir;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 23px;
+  color: #999999;
+  margin: 0 10px;
+  padding: 10px 5px;
 }
 
 .search-box {
   width: 490px;
   height: 43px;
   font-size: 16px;
-  margin: 50px 0;
+  margin: 50px 0 0 0;
   padding: 0 7px;
 }
 
 .auto-suggest {
-  width: 300px;
+  background-color: white;
+  width: 635px;
   margin: 0 auto 10px auto;
   text-align: left;
 }
 
 .auto-suggest li {
-  margin: 5px 0;
+  padding: 5px;
+  margin: 3px 0;
+  height: 35px;
+  line-height: 35px;
 }
 
 .auto-suggest li:hover {
-  background-color: #ececec;
+  background-color: #F4F4F4;
   font-weight: bold;
 }
 
@@ -247,7 +289,6 @@ h1, h2 {
 .search-button:hover, .search-button:active {
   border: 2px solid #ececec;
 }
-
 
 ul {
   list-style-type: none;
@@ -271,6 +312,10 @@ ul {
   margin: 10px auto;
 }
 
+.message.expanded {
+  background-color: #fffaea;
+}
+
 .text {
   white-space: pre-line;
 }
@@ -280,6 +325,17 @@ ul {
   margin-bottom: 5px;
   font-size: 90%;
   width: 400px;
+}
+
+.expand-button {
+  color: #999999;
+  background: none;
+  border: 0;
+  outline: 0;
+}
+
+.expand-button:hover {
+  text-decoration:underline;
 }
 
 .details span {
