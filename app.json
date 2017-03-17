@@ -13,7 +13,6 @@
   ],
   "image": "heroku/nodejs",
   "scripts": {
-    "postinstall": "npm run build",
     "postdeploy": "npm install",
     "start": "node server.js"
   },

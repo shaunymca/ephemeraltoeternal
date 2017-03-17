@@ -1,7 +1,7 @@
 var express = require('express')
 var path = require('path')
 var serveStatic = require('serve-static')
-var messages = require('modules/messages.js')
+var messages = require('./modules/messages.js')
 var Q = require('q')
 
 var app = express()
