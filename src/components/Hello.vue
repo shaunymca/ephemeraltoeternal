@@ -1,6 +1,6 @@
 <template>
   <div class="hello">
-    <div   v-if="users.length > 0">
+    <div   v-if="users.length === 0">
       <div class='results'>
         <h2>Getting Set Up</h2>
         </br>
