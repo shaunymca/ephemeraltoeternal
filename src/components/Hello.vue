@@ -63,7 +63,7 @@
     </div>
     <div class="results" v-if="messages.length > 0 && !loading">
       <div class="desc" v-if="$route.name !== 'Message'">
-        Results for '{{ resultsForTerm }}':
+        {{ messages.length }} results for '{{ resultsForTerm }}':
       </div>
       <ul>
         <li class="message"
