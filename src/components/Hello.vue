@@ -5,13 +5,26 @@
              v-model="searchTerm"
              v-on:keyup.13="search"
              placeholder="Search your archive"/>
+      <button class="search-button"
+              v-on:click="search"
+              v-bind:disabled="searchTerm === ''">
+        Search
+      </button>
+      <ul class="auto-suggest" v-if="userSuggestions.length > 0">
+        <li class="suggestion"
+            v-for="u in userSuggestions"
+            v-on:click="pickSuggestedUser(u)">
+          @{{ u }}
+        </li>
+      </ul>
+      <ul class="auto-suggest" v-if="channelSuggestions.length > 0">
+        <li class="suggestion"
+            v-for="c in channelSuggestions"
+            v-on:click="pickSuggestedChannel(c)">
+          #{{ c }}
+        </li>
+      </ul>
     </div>
-    <button class="search-button"
-            v-on:click="search"
-            v-if="searchTerm !== ''"
-            v-bind:disabled="searchTerm === ''">
-      Search
-    </button>
     <div class="results" v-if="loading">
       Loading...
     </div>
@@ -52,12 +65,55 @@ import moment from 'moment'
 
 export default {
   name: 'hello',
+  mounted() {
+    this.$http.get('/users').then(response => {
+      this.users = response.body.map(u => u.user_name)
+    })
+    this.$http.get('/channels').then(response => {
+      this.channels = response.body.map(c => c.channel_name)
+    })
+  },
+  watch: {
+    searchTerm: function (val, oldVal) {
+      if (val !== oldVal) {
+        this.userSuggestions = []
+        this.channelSuggestions = []
+      }
+      var userRe = /@([^\s]+)/
+      var setUserRe = /from:/
+      var userMatch = userRe.exec(val)
+      var setUserMatch = setUserRe.exec(val)
+      if (userMatch !== null && setUserMatch === null) {
+        var userStr = userMatch[1]
+        this.userSuggestions = this.users.filter(u => {
+          var userFilterRe = new RegExp(userStr)
+          return userFilterRe.exec(u) !== null
+        })
+      }
+
+      var channelRe = /#([^\s]+)/
+      var setChannelRe = /in:/
+      var channelMatch = channelRe.exec(val)
+      var setChannelMatch = setChannelRe.exec(val)
+      if (channelMatch !== null && setChannelMatch === null) {
+        var channelStr = channelMatch[1]
+        this.channelSuggestions = this.channels.filter(c => {
+          var channelFilterRe = new RegExp(channelStr)
+          return channelFilterRe.exec(c) !== null
+        })
+      }
+    }
+  },
   data () {
     return {
       loading: false,
       searchTerm: '',
       resultsForTerm: '',
       messages: [],
+      users: [],
+      channels: [],
+      userSuggestions: [],
+      channelSuggestions: []
     }
   },
   filters: {
@@ -67,6 +123,14 @@ export default {
     }
   },
   methods: {
+    pickSuggestedUser(u) {
+      this.userSuggestions = []
+      this.searchTerm = 'from:@' + u
+    },
+    pickSuggestedChannel(c) {
+      this.channelSuggestions = []
+      this.searchTerm = 'in:#' + c
+    },
     search() {
       if (this.searchTerm === '') {
         return
@@ -135,24 +199,45 @@ h1, h2 {
   font-weight: normal;
 }
 
+.results {
+  background-color: white;
+  padding: 15px 15px;
+  margin: 40px auto;
+  width: 75%;
+  text-align: left;
+}
+
 .search-box {
-  width: 300px;
-  height: 30px;
+  width: 490px;
+  height: 43px;
   font-size: 16px;
-  margin: 15px;
+  margin: 50px 0;
   padding: 0 7px;
 }
 
+.auto-suggest {
+  width: 300px;
+  margin: 0 auto 10px auto;
+  text-align: left;
+}
+
+.auto-suggest li {
+  margin: 5px 0;
+}
+
+.auto-suggest li:hover {
+  background-color: #ececec;
+  font-weight: bold;
+}
+
 .search-button {
-  border: 0;
-  background: none;
-  box-shadow:none;
-  border-radius: 0px;
-  width: 100px;
-  height: 30px;
+  width: 130px;
+  height: 47px;
   font-size: 16px;
-  font-weight: 100;
-  border: 1px solid #ececec;
+  color: #ececec;
+  border: none;
+  background-color: #3399CC;
+  margin-left: -4px;
 }
 
 .search-button:focus, .search-box:focus {
@@ -163,10 +248,6 @@ h1, h2 {
   border: 2px solid #ececec;
 }
 
-.results {
-  margin: 40px auto;
-  width: 75%;
-}
 
 ul {
   list-style-type: none;
