@@ -110,7 +110,7 @@ export default {
     })
 
     if (this.$route.name === 'Search') {
-      this.searchTerm = this.$route.params.query
+      this.searchTerm = decodeURIComponent(this.$route.params.query)
       this.search()
     }
     if (this.$route.name === 'Message') {
@@ -250,7 +250,7 @@ export default {
         opts.params.q = query
       }
 
-      this.$router.push({ path: '/search/' + this.searchTerm })
+      this.$router.push({ path: '/search/' + encodeURIComponent(this.searchTerm) })
 
       this.$http.get('/messages', opts).then(response => {
         this.resultsForTerm = this.searchTerm
