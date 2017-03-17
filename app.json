@@ -13,7 +13,9 @@
   ],
   "image": "heroku/nodejs",
   "scripts": {
-    "postdeploy": "npm install"
+    "postinstall": "npm run build",
+    "postdeploy": "npm install",
+    "start": "node server.js"
   },
   "env": {
     "PGSSLMODE": {
