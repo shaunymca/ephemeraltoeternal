@@ -24,6 +24,6 @@
     },
     "NPM_CONFIG_PRODUCTION":{
       "description": "Ensures that this uses the correct configs",
-      "value":false}
+      "value":"false"}
   }
 }
