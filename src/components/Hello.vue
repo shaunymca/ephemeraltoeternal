@@ -45,6 +45,10 @@
     <div class="results" v-if="loading">
       <div class="desc">Loading...</div>
     </div>
+    <div v-if="messages.length === 0 && !loading && resultsForTerm == ''"> 
+      <br>
+      <h2>Nothing to show yet, start searching</h2>
+    </div>
     <div class="results" v-if="messages.length === 0 && !loading && resultsForTerm !== ''">
       <div class="desc">No results for '{{ resultsForTerm }}'</div>
     </div>
