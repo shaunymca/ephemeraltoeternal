@@ -102,7 +102,7 @@ export default {
   name: 'hello',
   mounted() {
     this.$http.get('/users').then(response => {
-      this.users = response.body.map(u => u.user_name)
+      this.users = response.body
       this.loading = false
     })
     this.$http.get('/channels').then(response => {
@@ -129,7 +129,7 @@ export default {
       var setUserMatch = setUserRe.exec(val)
       if (userMatch !== null && setUserMatch === null) {
         var userStr = userMatch[1]
-        this.userSuggestions = this.users.filter(u => {
+        this.userSuggestions = this.users.map(u => u.user_name).filter(u => {
           var userFilterRe = new RegExp(userStr)
           return userFilterRe.exec(u) !== null
         })
@@ -167,6 +167,10 @@ export default {
     }
   },
   methods: {
+    getUserNameById(uid) {
+      var targetUserId = uid.replace(/<@(.*)>/, "$1")
+      return '@' + this.users.find((u) => u.user_id === targetUserId).user_name
+    },
     parseMessage(m) {
       if (m.text === '') {
         m.hide = true
@@ -183,7 +187,19 @@ export default {
           var imageUrlPart = imagePage.replace(/^.*.slack.com\/files\/[^\/]*\//, '')
           m.image_src = 'https://files.slack.com/files-pri/' + m.team_id + '-' + imageUrlPart
       }
+
+      var externalImageRe = /<(http[^\|]*)>( and commented:)?/
+      var externalImageMatch = externalImageRe.exec(m.text)
+      if (externalImageMatch !== null) {
+          m.image_link = externalImageMatch[1]
+          m.image_src = externalImageMatch[1]
+      }
+
+      var atUserRe = /<@([^>]*)>/g
+
+      m.text = m.text.replace(atUserRe, this.getUserNameById)
       m.text = m.text.replace(imageRe, '')
+      m.text = m.text.replace(externalImageRe, '')
       return m
     },
     sortMessages(a, b) {
