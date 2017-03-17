@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <h1>ephemeral &#8594; eternal</h1>
-    <h2>Search your entire Slack archive, even if you have a free account.</h2>
+    <h2>Search your entire archive, even if you have a free account.</h2>
     <router-view></router-view>
   </div>
 </template>
