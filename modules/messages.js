@@ -45,7 +45,7 @@ exports.getUsers = function() {
         client.end(function (err) {
           if (err) throw err;
         });
-        if (typeof result.row !== 'undefined' s) {
+        if (typeof result.row !== 'undefined') {
           resolve(result.rows);
         }
         else {resolve([])}
