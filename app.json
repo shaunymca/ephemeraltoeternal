@@ -18,7 +18,7 @@
   "env": {
     "PGSSLMODE": {
       "description": "Enables this app to access the database with SSL turned on",
-      "value":"requre"
+      "value":"require"
     }
   }
 }
