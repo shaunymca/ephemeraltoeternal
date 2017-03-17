@@ -10,6 +10,7 @@ Click the deploy button to setup this app in a free Heroku instance and get set 
 
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
 
+[![read](https://github.com/shaunymca/ephemeraltoeternal/blob/master/message-search.gif?raw=true)]()
 
 ## Build Setup
 

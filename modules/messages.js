@@ -41,7 +41,7 @@ exports.getUsers = function() {
     client.connect(function (err) {
       if (err) throw err;
       client.query('SELECT distinct(user_name), user_id FROM slack.data;', function (err, result) {
-        if (err) throw err;
+        if (err) resolve([]);
         client.end(function (err) {
           if (err) throw err;
         });
@@ -57,7 +57,7 @@ exports.getChannels = function() {
     client.connect(function (err) {
       if (err) throw err;
       client.query('SELECT distinct(channel_name) FROM slack.data', function (err, result) {
-        if (err) throw err;
+        if (err) resolve([]);
         client.end(function (err) {
           if (err) throw err;
         });
