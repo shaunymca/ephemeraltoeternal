@@ -312,10 +312,11 @@ h1, h2 {
   margin: 3px 0;
   height: 35px;
   line-height: 35px;
+  cursor: pointer;
+  border-bottom: 1px solid #f4f4f4;
 }
 
 .auto-suggest li:hover {
-  background-color: #F4F4F4;
   font-weight: bold;
 }
 
@@ -327,6 +328,7 @@ h1, h2 {
   border: none;
   background-color: #3399CC;
   margin-left: -4px;
+  cursor: pointer;
 }
 
 .search-button:focus, .search-box:focus {
