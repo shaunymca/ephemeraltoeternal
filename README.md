@@ -3,11 +3,9 @@
 > Slack archiver
 
 ## Deploy today!
-Click the deploy button to setup this app in a free Heroku instance and get set up.
+Click the deploy button to setup this app in a free Heroku instance and get set up.  
+
 [![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy)
-<a href="https://heroku.com/deploy" data-external="true" target="_blank">
-  <img src="https://www.herokucdn.com/deploy/button.png" alt="Deploy" </img>
-</a>
 
 
 ## Build Setup
