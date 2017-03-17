@@ -21,6 +21,8 @@
     "PGSSLMODE": {
       "description": "Enables this app to access the database with SSL turned on",
       "value":"require"
-    }
+    },
+    "NPM_CONFIG_PRODUCTION":{
+      "value":false}
   }
 }
