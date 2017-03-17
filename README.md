@@ -3,7 +3,7 @@
 App that stores and searches messages from your Slack org.
 Ideal for large communities that won't ever be able to pay for Slack.
 
-##[DEMO (philly dev slack)](https://phillydevslack.herokuapp.com/#/)
+## [DEMO (philly dev slack)](https://phillydevslack.herokuapp.com/#/)
 
 ## Deploy today!
 Click the deploy button to setup this app in a free Heroku instance and get set up.  
