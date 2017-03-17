@@ -2,19 +2,19 @@
   <div class="hello">
     <div v-if="users.length === 0 && !loading">
       <div class='results'>
-        <h2>Getting Set Up</h2>
-        </br>
-        <li>Set up a free <a target="_blank" href="https://stitchdata.com/signup"> Stitch account </a> to sync data to your heroku postgres account</li>
-        <li>Once you've logged into Stitch, create a webhook integration. <b>Please note, you have to name the integration "Stitch" for this app to work correctly</b>, and make sure to note the webhook url, and copy it. </li>
-        <li> You'll get taken to the Destination page next. Make sure to leave this tab open for later.</li>
-        <li> Open up your Slack group settings and head to <code>menu / Configure Apps / Custom Integrations / Outgoing Webhooks</code>. </li>
-        <li> Click "Add A Configuration" and confirm. Scroll down and choose the channel you'd like to set up. You can add more channels later by setting up more webhooks. Add the webhook url you copied earlier from Stitch in the "URL(s)" section. Scroll down and click "Save Settings"</li>
-        <li>Now you'll need to add your Heroku Postgres to Stitch, so it can load the messages. Head to this app's repository in your Heroku account. On the Overview tab for this app, you'll see the Heroku Postgres add-on listed. Click on it.</li>
-        <li>Scroll down, and click the "View Credentials" button. Copy over the relevant sections into the Stitch destination page, and click "Save Destination" in Stitch."</li>
-        </br>
-        <p> And, you're done!. After a few messages have gone through, you'll be able to search and view them here. </p>
-        
-        
+        <div class="instructions-container">
+          <h2>Getting Set Up</h2>
+          <ul class="instructions">
+            <li>Set up a free <a target="_blank" href="https://stitchdata.com/signup"> Stitch account </a> to sync data to your heroku postgres account</li>
+            <li>Once you've logged into Stitch, create a webhook integration. <b>Please note, you have to name the integration "Stitch" for this app to work correctly</b>, and make sure to note the webhook url, and copy it. </li>
+            <li> You'll get taken to the Destination page next. Make sure to leave this tab open for later.</li>
+            <li> Open up your Slack group settings and head to <code> menu / Configure Apps / Custom Integrations / Outgoing Webhooks</code>. </li>
+            <li> Click "Add A Configuration" and confirm. Scroll down and choose the channel you'd like to set up. You can add more channels later by setting up more webhooks. Add the webhook url you copied earlier from Stitch in the "URL(s)" section. Scroll down and click "Save Settings"</li>
+            <li>Now you'll need to add your Heroku Postgres to Stitch, so it can load the messages. Head to this app's repository in your Heroku account. On the Overview tab for this app, you'll see the Heroku Postgres add-on listed. Click on it.</li>
+            <li>Scroll down, and click the "View Credentials" button. Copy over the relevant sections into the Stitch destination page, and click "Save Destination" in Stitch."</li>
+          </ul>
+          <p><b>And, you're done!</b> After a few messages have gone through, you'll be able to search and view them here. </p>
+        </div>        
       </div>
     </div>
     <div v-else>
@@ -398,4 +398,40 @@ a {
 a:hover {
   text-decoration: underline;
 }
+
+.instructions-container {
+  padding: 35px;
+  color: #5f5f5f;
+  font-weight: 500;
+}
+
+.instructions-container b {
+  font-weight: 900;
+}
+
+.instructions-container h2 {
+  max-width: 100%;
+  font-weight: bold;
+  font-size: 20px;
+  margin: 1rem 0;
+}
+
+.instructions {
+  padding: 0 40px 0 50px;
+  margin: 0 auto;
+}
+
+.instructions li {
+  margin-bottom: 1rem;
+}
+
+.instructions li code {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+body {
+  padding-bottom: 3rem;
+}
+
 </style>
