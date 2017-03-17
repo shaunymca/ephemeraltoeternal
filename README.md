@@ -1,6 +1,7 @@
 # ephemeral-to-eternal
 
-> Slack archiver
+App that stores and searches messages from your Slack org.
+Ideal for large communities that won't ever be able to pay for Slack.
 
 ## Deploy today!
 Click the deploy button to setup this app in a free Heroku instance and get set up.  
@@ -15,7 +16,7 @@ Click the deploy button to setup this app in a free Heroku instance and get set 
 npm install
 
 # add a dotenv file
-You'll need to add a `.env` file to root folder? Include the connection details like below:
+You'll need to add a `.env` file to root folder. Include the Postgres settings as below:
 `DATABASE_URL=<your database uri>`
 `PGSSLMODE=require`
 
